@@ -1,225 +1,890 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | Developer & Creator</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#0f172a',
-                        cardBg: '#1e293b',
-                        accent: '#38bdf8',
-                    }
-                }
+    <title>Color-Coded Timetable Manager</title>
+    <style>
+        :root {
+            --bg-color: #0b132b;
+            --card-bg: #1c2541;
+            --text-color: #ffffff;
+            --text-muted: #8d99ae;
+            --border-color: #2a3d66;
+            --primary: #4361ee;
+            --primary-hover: #3a0ca3;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --radius-pill: 50px;
+            --radius-card: 16px;
+            --radius-subtle: 8px;
+            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Custom Dark Blue Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b132b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a3d66;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4361ee;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .topbar {
+            background-color: #070d1d;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #38bdf8;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px 20px;
+        }
+
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            background: var(--card-bg);
+            padding: 20px 25px;
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .header-title-group h1 {
+            margin: 0 0 6px 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-color);
+            letter-spacing: -0.5px;
+        }
+
+        .week-indicator {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .week-indicator span {
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .week-selector-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .week-selector-wrapper label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select, button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+
+        select {
+            appearance: none;
+            padding-right: 35px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: calc(100% - 12px) center;
+        }
+
+        button:hover, select:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(67, 97, 238, 0.5);
+        }
+
+        button.danger {
+            background-color: var(--danger);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        button.danger:hover {
+            background-color: var(--danger-hover);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
+        }
+
+        .timetable-wrapper {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 8px;
+        }
+
+        th, td {
+            padding: 0;
+            text-align: center;
+            vertical-align: middle;
+            height: 90px;
+            width: 14%;
+        }
+
+        .heading-pill {
+            background-color: #273453;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-subtle);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
+            padding: 0 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        td.time-col {
+            width: 13%;
+        }
+
+        .slot {
+            border-radius: 12px;
+            padding: 10px;
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            transition: all 0.2s ease;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .slot:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .slot-empty {
+            border: 2px dashed var(--border-color);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slot-empty:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .slot-empty span {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .slot-title {
+            font-weight: 700;
+            font-size: 12px;
+            word-break: break-word;
+            line-height: 1.2;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .slot-location {
+            font-size: 10px;
+            opacity: 0.95;
+            margin-top: 3px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .slot-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: auto;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+
+        .slot:hover .slot-actions {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .slot-actions button {
+            padding: 2px 6px;
+            font-size: 10px;
+            background: rgba(0,0,0,0.4);
+            border-radius: var(--radius-pill);
+            box-shadow: none;
+        }
+
+        .slot-actions button:hover {
+            background: rgba(0,0,0,0.7);
+            transform: none;
+            box-shadow: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 8, 20, 0.8);
+            backdrop-filter: blur(6px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: var(--radius-card);
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            background: #0b132b;
+            color: #fff;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        /* Autocomplete Ghost Overlay */
+        .input-wrapper {
+            position: relative;
+            display: block;
+        }
+
+        .input-ghost {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 10px 12px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.3);
+            border: 1px solid transparent;
+            font-size: 13px;
+            pointer-events: none;
+            box-sizing: border-box;
+            white-space: pre;
+            overflow: hidden;
+            font-family: inherit;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .modal-buttons button {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .btn-secondary {
+            background-color: #273453;
+            color: #fff;
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #32446d;
+            transform: translateY(-1px);
+            box-shadow: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .topbar {
+                padding: 12px 15px;
+            }
+            header {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 15px;
+            }
+            .controls {
+                justify-content: space-between;
+            }
+            th, td {
+                height: 75px;
+            }
+            .slot-title {
+                font-size: 10px;
+            }
+            .slot-location {
+                font-size: 9px;
+            }
+            .heading-pill {
+                font-size: 9px;
             }
         }
-    </script>
-    <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </style>
 </head>
-<body class="bg-darkBg text-slate-100 font-sans antialiased selection:bg-accent selection:text-darkBg">
+<body>
 
-    <!-- Navigation Bar -->
-    <nav class="fixed top-0 left-0 w-full bg-darkBg/80 backdrop-blur-md z-50 border-b border-slate-800">
-        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="#" class="text-xl font-bold tracking-wider text-accent">&lt;Dev/&gt;</a>
-            
-            <!-- Desktop Links -->
-            <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-300">
-                <a href="#about" class="hover:text-accent transition">About</a>
-                <a href="#projects" class="hover:text-accent transition">Projects</a>
-                <a href="#skills" class="hover:text-accent transition">Skills</a>
-                <a href="#contact" class="hover:text-accent transition">Contact</a>
+    <div class="topbar">
+        <h2>Timetable Manager</h2>
+    </div>
+
+<div class="container">
+    <header>
+        <div class="header-title-group">
+            <h1>Schedule Dashboard</h1>
+            <div class="week-indicator">
+                Current Real-World Schedule Cycle: <span id="currentCycleText">Week B</span><br>
+                Current Period: <span id="currentPeriodText">---</span> | Next Period: <span id="nextPeriodText">---</span>
             </div>
-
-            <!-- Mobile Menu Button -->
-            <button id="menu-btn" class="md:hidden text-slate-300 focus:outline-none">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </button>
         </div>
-
-        <!-- Mobile Dropdown Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-cardBg border-b border-slate-800 px-6 py-4 space-y-3">
-            <a href="#about" class="block text-slate-300 hover:text-accent transition">About</a>
-            <a href="#projects" class="block text-slate-300 hover:text-accent transition">Projects</a>
-            <a href="#skills" class="block text-slate-300 hover:text-accent transition">Skills</a>
-            <a href="#contact" class="block text-slate-300 hover:text-accent transition">Contact</a>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <header class="min-h-screen flex items-center justify-center px-6 pt-16">
-        <div class="max-w-3xl text-center">
-            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
-                Hi, I'm <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-indigo-400">Danish</span>
-            </h1>
-            <p class="text-lg md:text-xl text-slate-400 mb-8 leading-relaxed">
-                A passionate developer & creator focused on building immersive digital experiences, clean codebases, and interactive applications.
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#projects" class="px-8 py-3 rounded-lg bg-accent text-darkBg font-semibold hover:bg-sky-400 transition shadow-lg shadow-sky-500/20">
-                    View Projects
-                </a>
-                <a href="#contact" class="px-8 py-3 rounded-lg bg-slate-800 text-slate-200 font-semibold border border-slate-700 hover:bg-slate-700 transition">
-                    Get in Touch
-                </a>
+        <div class="controls">
+            <div class="week-selector-wrapper">
+                <label for="weekSelect">Viewing Schedule</label>
+                <select id="weekSelect" onchange="changeActiveWeek()">
+                    <option value="A">Week A</option>
+                    <option value="B">Week B</option>
+                    <option value="BOTH">Both Week A & B</option>
+                </select>
             </div>
+            <button onclick="clearTimetable()" class="danger">Clear Current View</button>
         </div>
     </header>
 
-    <!-- About Section -->
-    <section id="about" class="py-24 px-6 bg-slate-900/50">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
-                <span class="text-accent">01.</span> About Me
-            </h2>
-            <div class="grid md:grid-cols-3 gap-8 items-center">
-                <div class="md:col-span-2 text-slate-300 space-y-4 leading-relaxed">
-                    <p>
-                        I am a dedicated developer with a strong foundation in computer science and software engineering. I love taking on complex problem statements and turning them into streamlined, elegant solutions.
-                    </p>
-                    <p>
-                        Whether it's architecting game logic, crafting performance-optimized web apps, or experimenting with new algorithms, I enjoy pushing the boundaries of what I can build.
-                    </p>
-                </div>
-                <div class="bg-cardBg p-6 rounded-xl border border-slate-800 text-center">
-                    <div class="w-24 h-24 bg-slate-800 rounded-full mx-auto mb-4 flex items-center justify-center text-accent text-3xl border border-slate-700">
-                        <i class="fa-solid fa-code"></i>
-                    </div>
-                    <h3 class="font-bold text-lg mb-1">Developer</h3>
-                    <p class="text-xs text-slate-400">Problem Solver & Creator</p>
-                </div>
+    <div class="timetable-wrapper" id="timetableContainer"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="entryModal">
+    <div class="modal-content" onkeydown="handleModalKeyDown(event)">
+        <h3 id="modal-title">Add/Edit Event</h3>
+        <input type="hidden" id="modal-day">
+        <input type="hidden" id="modal-time">
+        <input type="hidden" id="modal-target-week">
+        
+        <div class="form-group">
+            <label for="eventSubject">Subject / Event Name</label>
+            <div class="input-wrapper">
+                <input type="text" id="eventSubject" placeholder="e.g. Mathematics" oninput="onSubjectInput()" onkeydown="handleAutocompleteKey(event, 'subject')">
+                <div class="input-ghost" id="subjectGhost"></div>
             </div>
         </div>
-    </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="py-24 px-6">
-        <div class="max-w-5xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-bold mb-12 flex items-center gap-3">
-                <span class="text-accent">02.</span> Featured Projects
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Project Card 1 -->
-                <div class="bg-cardBg rounded-xl overflow-hidden border border-slate-800 hover:border-slate-700 transition flex flex-col justify-between">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <i class="fa-regular fa-folder-closed text-accent text-2xl"></i>
-                            <div class="flex gap-3 text-slate-400">
-                                <a href="#" class="hover:text-accent transition"><i class="fa-brands fa-github text-lg"></i></a>
-                                <a href="#" class="hover:text-accent transition"><i class="fa-solid fa-arrow-up-right-from-square text-lg"></i></a>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">Project Title One</h3>
-                        <p class="text-slate-400 text-sm mb-4">
-                            A brief description of the project detailing the core problem it solves, the technologies used, and its key features.
-                        </p>
-                    </div>
-                    <div class="px-6 py-4 bg-slate-900/40 border-t border-slate-800/60 flex flex-wrap gap-2 text-xs text-slate-300">
-                        <span class="px-2 py-1 bg-slate-800 rounded">Python</span>
-                        <span class="px-2 py-1 bg-slate-800 rounded">Game Engine</span>
-                        <span class="px-2 py-1 bg-slate-800 rounded">UI/UX</span>
-                    </div>
-                </div>
-
-                <!-- Project Card 2 -->
-                <div class="bg-cardBg rounded-xl overflow-hidden border border-slate-800 hover:border-slate-700 transition flex flex-col justify-between">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <i class="fa-regular fa-folder-closed text-accent text-2xl"></i>
-                            <div class="flex gap-3 text-slate-400">
-                                <a href="#" class="hover:text-accent transition"><i class="fa-brands fa-github text-lg"></i></a>
-                                <a href="#" class="hover:text-accent transition"><i class="fa-solid fa-arrow-up-right-from-square text-lg"></i></a>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">Project Title Two</h3>
-                        <p class="text-slate-400 text-sm mb-4">
-                            An interactive web-based utility application designed to optimize workflow processes and data parsing client-side.
-                        </p>
-                    </div>
-                    <div class="px-6 py-4 bg-slate-900/40 border-t border-slate-800/60 flex flex-wrap gap-2 text-xs text-slate-300">
-                        <span class="px-2 py-1 bg-slate-800 rounded">JavaScript</span>
-                        <span class="px-2 py-1 bg-slate-800 rounded">Tailwind CSS</span>
-                        <span class="px-2 py-1 bg-slate-800 rounded">WebAssembly</span>
-                    </div>
-                </div>
+        <div class="form-group">
+            <label for="eventLocation">Teacher Name</label>
+            <div class="input-wrapper">
+                <input type="text" id="eventLocation" placeholder="Teacher Name" oninput="onLocationInput()" onkeydown="handleAutocompleteKey(event, 'location')">
+                <div class="input-ghost" id="locationGhost"></div>
             </div>
         </div>
-    </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="py-24 px-6 bg-slate-900/50">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-bold mb-12 flex items-center gap-3">
-                <span class="text-accent">03.</span> Skills & Technologies
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                <div class="bg-cardBg p-4 rounded-lg border border-slate-800 text-center hover:border-accent/50 transition">
-                    <p class="font-medium text-slate-200">Python</p>
-                </div>
-                <div class="bg-cardBg p-4 rounded-lg border border-slate-800 text-center hover:border-accent/50 transition">
-                    <p class="font-medium text-slate-200">JavaScript / TS</p>
-                </div>
-                <div class="bg-cardBg p-4 rounded-lg border border-slate-800 text-center hover:border-accent/50 transition">
-                    <p class="font-medium text-slate-200">HTML & CSS</p>
-                </div>
-                <div class="bg-cardBg p-4 rounded-lg border border-slate-800 text-center hover:border-accent/50 transition">
-                    <p class="font-medium text-slate-200">Git & GitHub</p>
-                </div>
-                <div class="bg-cardBg p-4 rounded-lg border border-slate-800 text-center hover:border-accent/50 transition">
-                    <p class="font-medium text-slate-200">Game Engines</p>
-                </div>
-                <div class="bg-cardBg p-4 rounded-lg border border-slate-800 text-center hover:border-accent/50 transition">
-                    <p class="font-medium text-slate-200">Shaders / GLSL</p>
-                </div>
-                <div class="bg-cardBg p-4 rounded-lg border border-slate-800 text-center hover:border-accent/50 transition">
-                    <p class="font-medium text-slate-200">Data Structures</p>
-                </div>
-                <div class="bg-cardBg p-4 rounded-lg border border-slate-800 text-center hover:border-accent/50 transition">
-                    <p class="font-medium text-slate-200">Problem Solving</p>
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="eventColor">Color Category</label>
+            <select id="eventColor">
+                <option value="#ef4444">🔴 Vibrant Red</option>
+                <option value="#f59e0b">🟡 Vibrant Yellow</option>
+                <option value="#22c55e">🟢 Vibrant Green</option>
+                <option value="#3b82f6">🔵 Vibrant Blue</option>
+                <option value="#f97316">🟠 Vibrant Orange</option>
+                <option value="#a855f7">🟣 Vibrant Purple</option>
+                <option value="#ec4899">🩷 Vibrant Pink</option>
+            </select>
         </div>
-    </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-24 px-6">
-        <div class="max-w-xl mx-auto text-center">
-            <h2 class="text-2xl md:text-3xl font-bold mb-4">Get In Touch</h2>
-            <p class="text-slate-400 mb-8">
-                Whether you have a question, a project proposal, or just want to connect, feel free to drop a message!
-            </p>
-            <a href="danishazhar2007@gmail.com" class="inline-block px-8 py-3 rounded-lg bg-accent text-darkBg font-semibold hover:bg-sky-400 transition shadow-lg shadow-sky-500/20">
-                GMail
-            </a>
-            <a href="danishazhar2007@gmail.com" class="inline-block px-8 py-3 rounded-lg bg-accent text-darkBg font-semibold hover:bg-sky-400 transition shadow-lg shadow-sky-500/20">
-                LinkedIn
-            </a>
-            <a href="danishazhar2007@gmail.com" class="inline-block px-8 py-3 rounded-lg bg-accent text-darkBg font-semibold hover:bg-sky-400 transition shadow-lg shadow-sky-500/20">
-                GitHub
-            </a>
+        <div class="modal-buttons">
+            <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+            <button type="button" onclick="saveEvent()">Save Event</button>
         </div>
-    </section>
+    </div>
+</div>
 
-    <!-- Footer -->
-    <footer class="py-8 text-center text-xs text-slate-500 border-t border-slate-800">
-        <p>Designed & Built with Tailwind CSS</p>
-    </footer>
+<script>
+    const times = ["08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "01:00 PM", "02:00 PM", "03:00 PM"];
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const colorPalette = ["#ef4444", "#f59e0b", "#22c55e", "#3b82f6", "#f97316", "#a855f7", "#ec4899"];
+    
+    let allTimetableData = JSON.parse(localStorage.getItem('allTimetableData')) || { A: {}, B: {} };
 
-    <!-- Script for Mobile Menu Toggle -->
-    <script>
-        const menuBtn = document.getElementById('menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+    function getComputedCurrentWeekType() {
+        const now = new Date();
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        const weekNumber = Math.ceil((((now - startOfYear) / 86400000) + startOfYear.getDay() + 1) / 7);
+        return weekNumber % 2 === 0 ? "B" : "A";
+    }
 
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+    function updatePeriodsAndIndicators() {
+        const weekType = getComputedCurrentWeekType();
+        document.getElementById('currentCycleText').innerText = `Week ${weekType}`;
+
+        const now = new Date();
+        const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const currentDay = dayNames[now.getDay()];
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+        const timeSlots = times.map(t => {
+            const [timeStr, modifier] = t.split(' ');
+            let [hours, minutes] = timeStr.split(':').map(Number);
+            if (modifier === 'PM' && hours < 12) hours += 12;
+            if (modifier === 'AM' && hours === 12) hours = 0;
+            return { label: t, minutes: hours * 60 + minutes };
         });
-    </script>
+
+        let currentPeriodStr = "---";
+        let nextPeriodStr = "---";
+
+        if (currentDay === 'Saturday' || currentDay === 'Sunday') {
+            currentPeriodStr = `Weekend (${times[0]})`;
+            const weekData = allTimetableData[weekType] || {};
+            const nextEntry = weekData[`Monday-${times[0]}`];
+            const nextSub = nextEntry ? nextEntry.subject : "Free Period";
+            const nextLoc = nextEntry && nextEntry.location ? ` (${nextEntry.location})` : "";
+            nextPeriodStr = `${nextSub}${nextLoc} (${times[0]})`;
+        } else {
+            const weekData = allTimetableData[weekType] || {};
+            
+            let activeIndex = -1;
+            for (let i = 0; i < timeSlots.length; i++) {
+                const slot = timeSlots[i];
+                if (currentMinutes >= slot.minutes && currentMinutes < slot.minutes + 60) {
+                    activeIndex = i;
+                    break;
+                }
+            }
+
+            if (activeIndex !== -1) {
+                const slot = timeSlots[activeIndex];
+                const entry = weekData[`${currentDay}-${slot.label}`];
+                const subName = entry ? entry.subject : "Free Period";
+                const locName = entry && entry.location ? ` (${entry.location})` : "";
+                currentPeriodStr = `${subName}${locName} (${slot.label})`;
+
+                if (activeIndex + 1 < timeSlots.length) {
+                    const nextSlot = timeSlots[activeIndex + 1];
+                    const nextEntry = weekData[`${currentDay}-${nextSlot.label}`];
+                    const nextSubName = nextEntry ? nextEntry.subject : "Free Period";
+                    const nextLocName = nextEntry && nextEntry.location ? ` (${nextEntry.location})` : "";
+                    nextPeriodStr = `${nextSubName}${nextLocName} (${nextSlot.label})`;
+                } else {
+                    nextPeriodStr = "End of Day";
+                }
+            } else if (currentMinutes < timeSlots[0].minutes) {
+                currentPeriodStr = `Before School (${times[0]})`;
+                const nextEntry = weekData[`${currentDay}-${times[0]}`];
+                const nextSubName = nextEntry ? nextEntry.subject : "Free Period";
+                const nextLocName = nextEntry && nextEntry.location ? ` (${nextEntry.location})` : "";
+                nextPeriodStr = `${nextSubName}${nextLocName} (${times[0]})`;
+            } else {
+                currentPeriodStr = "After School";
+                nextPeriodStr = "Tomorrow 08:00 AM";
+            }
+        }
+
+        document.getElementById('currentPeriodText').innerText = currentPeriodStr;
+        document.getElementById('nextPeriodText').innerText = nextPeriodStr;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updatePeriodsAndIndicators();
+        setInterval(updatePeriodsAndIndicators, 60000);
+    });
+
+    let currentWeek = localStorage.getItem('activeWeekView') || 'B';
+    document.getElementById('weekSelect').value = currentWeek;
+
+    function changeActiveWeek() {
+        currentWeek = document.getElementById('weekSelect').value;
+        localStorage.setItem('activeWeekView', currentWeek);
+        renderTimetable();
+    }
+
+    function renderSingleTable(weekKey, titleLabel) {
+        let html = '';
+        if (titleLabel) {
+            html += `<div class="section-title">📅 ${titleLabel}</div>`;
+        }
+        html += `<table><thead><tr>
+            <th><div class="heading-pill">Time</div></th>
+            <th><div class="heading-pill">Monday</div></th>
+            <th><div class="heading-pill">Tuesday</div></th>
+            <th><div class="heading-pill">Wednesday</div></th>
+            <th><div class="heading-pill">Thursday</div></th>
+            <th><div class="heading-pill">Friday</div></th>
+        </tr></thead><tbody>`;
+
+        const weekData = allTimetableData[weekKey] || {};
+
+        times.forEach(time => {
+            html += `<tr>`;
+            html += `<td class="time-col"><div class="heading-pill">${time}</div></td>`;
+
+            days.forEach(day => {
+                const key = `${day}-${time}`;
+                const entry = weekData[key];
+
+                if (entry) {
+                    html += `<td>
+                        <div class="slot" style="background-color: ${entry.color};" onclick="openModal('${day}', '${time}', '${weekKey}')">
+                            <div>
+                                <div class="slot-title">${entry.subject}</div>
+                                <div class="slot-location">${entry.location || ''}</div>
+                            </div>
+                            <div class="slot-actions">
+                                <button onclick="event.stopPropagation(); deleteEvent('${day}', '${time}', '${weekKey}')">✕</button>
+                            </div>
+                        </div>
+                    </td>`;
+                } else {
+                    html += `<td>
+                        <div class="slot-empty" onclick="openModal('${day}', '${time}', '${weekKey}')">
+                            <span>+ Add</span>
+                        </div>
+                    </td>`;
+                }
+            });
+            html += `</tr>`;
+        });
+
+        html += `</tbody></table>`;
+        return html;
+    }
+
+    function renderTimetable() {
+        const container = document.getElementById('timetableContainer');
+        container.innerHTML = '';
+
+        if (currentWeek === 'BOTH') {
+            container.innerHTML += renderSingleTable('A', 'Week A Schedule');
+            container.innerHTML += `<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">`;
+            container.innerHTML += renderSingleTable('B', 'Week B Schedule');
+        } else {
+            container.innerHTML = renderSingleTable(currentWeek, null);
+        }
+    }
+
+    function getUniqueValues(field) {
+        const values = new Set();
+        ['A', 'B'].forEach(w => {
+            const weekData = allTimetableData[w];
+            if (!weekData) return;
+            for (let key in weekData) {
+                const entry = weekData[key];
+                if (entry && entry[field]) {
+                    values.add(entry[field].trim());
+                }
+            }
+        });
+        return Array.from(values);
+    }
+
+    function getRandomColorAvoidingAdjacent(day, time, targetWeek) {
+        const dIdx = days.indexOf(day);
+        const tIdx = times.indexOf(time);
+        const adjacentColors = new Set();
+
+        const checkCoords = [
+            { d: dIdx - 1, t: tIdx },
+            { d: dIdx + 1, t: tIdx },
+            { d: dIdx, t: tIdx - 1 },
+            { d: dIdx, t: tIdx + 1 }
+        ];
+
+        const targetWeekData = allTimetableData[targetWeek] || {};
+
+        checkCoords.forEach(coord => {
+            if (coord.d >= 0 && coord.d < days.length && coord.t >= 0 && coord.t < times.length) {
+                const adjKey = `${days[coord.d]}-${times[coord.t]}`;
+                const adjEntry = targetWeekData[adjKey];
+                if (adjEntry && adjEntry.color) {
+                    adjacentColors.add(adjEntry.color);
+                }
+            }
+        });
+
+        let availableColors = colorPalette.filter(c => !adjacentColors.has(c));
+        if (availableColors.length === 0) {
+            availableColors = colorPalette;
+        }
+
+        const randomIndex = Math.floor(Math.random() * availableColors.length);
+        return availableColors[randomIndex];
+    }
+
+    function updateGhost(inputId, ghostId, suggestions) {
+        const input = document.getElementById(inputId);
+        const ghost = document.getElementById(ghostId);
+        const val = input.value;
+
+        if (!val) {
+            ghost.innerText = '';
+            return;
+        }
+
+        const match = suggestions.find(item => item.toLowerCase().startsWith(val.toLowerCase()));
+        if (match && match.toLowerCase() !== val.toLowerCase()) {
+            ghost.innerText = val + match.slice(val.length);
+        } else {
+            ghost.innerText = '';
+        }
+    }
+
+    function onSubjectInput() {
+        const subjects = getUniqueValues('subject');
+        updateGhost('eventSubject', 'subjectGhost', subjects);
+    }
+
+    function onLocationInput() {
+        const locations = getUniqueValues('location');
+        updateGhost('eventLocation', 'locationGhost', locations);
+    }
+
+    function handleAutocompleteKey(event, type) {
+        if (event.key === 'Tab') {
+            const inputId = type === 'subject' ? 'eventSubject' : 'eventLocation';
+            const ghostId = type === 'subject' ? 'subjectGhost' : 'locationGhost';
+            const ghost = document.getElementById(ghostId);
+            
+            if (ghost.innerText) {
+                event.preventDefault();
+                document.getElementById(inputId).value = ghost.innerText;
+                ghost.innerText = '';
+                if (type === 'subject') {
+                    onSubjectInput();
+                } else {
+                    onLocationInput();
+                }
+            }
+
+            if (type === 'subject') {
+                event.preventDefault();
+                document.getElementById('eventLocation').focus();
+            }
+        }
+    }
+
+    function handleModalKeyDown(event) {
+        if (event.key === 'Enter') {
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT') {
+                event.preventDefault();
+                saveEvent();
+            }
+        }
+    }
+
+    function openModal(day, time, targetWeekOverride) {
+        const targetWeek = targetWeekOverride || (currentWeek === 'BOTH' ? 'A' : currentWeek);
+        document.getElementById('modal-day').value = day;
+        document.getElementById('modal-time').value = time;
+        document.getElementById('modal-target-week').value = targetWeek;
+        
+        const key = `${day}-${time}`;
+        const entry = allTimetableData[targetWeek][key];
+
+        document.getElementById('subjectGhost').innerText = '';
+        document.getElementById('locationGhost').innerText = '';
+
+        if (entry) {
+            document.getElementById('eventSubject').value = entry.subject;
+            document.getElementById('eventLocation').value = entry.location || '';
+            document.getElementById('eventColor').value = entry.color;
+            document.getElementById('modal-title').innerText = `Edit [Week ${targetWeek}]: ${day} at ${time}`;
+        } else {
+            document.getElementById('eventSubject').value = '';
+            document.getElementById('eventLocation').value = '';
+            document.getElementById('eventColor').value = getRandomColorAvoidingAdjacent(day, time, targetWeek);
+            document.getElementById('modal-title').innerText = `Add [Week ${targetWeek}]: ${day} at ${time}`;
+        }
+
+        document.getElementById('entryModal').style.display = 'flex';
+        document.getElementById('eventSubject').focus();
+    }
+
+    function closeModal() {
+        document.getElementById('entryModal').style.display = 'none';
+    }
+
+    function saveEvent() {
+        const day = document.getElementById('modal-day').value;
+        const time = document.getElementById('modal-time').value;
+        const targetWeek = document.getElementById('modal-target-week').value;
+        const subject = document.getElementById('eventSubject').value.trim();
+        const location = document.getElementById('eventLocation').value.trim();
+        const color = document.getElementById('eventColor').value;
+        const key = `${day}-${time}`;
+
+        if (!subject) {
+            alert('Please enter a subject name.');
+            return;
+        }
+
+        if (!allTimetableData[targetWeek]) {
+            allTimetableData[targetWeek] = {};
+        }
+
+        allTimetableData[targetWeek][key] = { subject, location, color };
+        localStorage.setItem('allTimetableData', JSON.stringify(allTimetableData));
+        closeModal();
+        renderTimetable();
+        updatePeriodsAndIndicators();
+    }
+
+    function deleteEvent(day, time, targetWeekOverride) {
+        const targetWeek = targetWeekOverride || (currentWeek === 'BOTH' ? 'A' : currentWeek);
+        const key = `${day}-${time}`;
+        if (allTimetableData[targetWeek]) {
+            delete allTimetableData[targetWeek][key];
+            localStorage.setItem('allTimetableData', JSON.stringify(allTimetableData));
+            renderTimetable();
+            updatePeriodsAndIndicators();
+        }
+    }
+
+    function clearTimetable() {
+        if (currentWeek === 'BOTH') {
+            if (confirm('Are you sure you want to clear the entire timetable for BOTH Week A and Week B?')) {
+                allTimetableData.A = {};
+                allTimetableData.B = {};
+                localStorage.setItem('allTimetableData', JSON.stringify(allTimetableData));
+                renderTimetable();
+                updatePeriodsAndIndicators();
+            }
+        } else {
+            if (confirm(`Are you sure you want to clear the entire timetable for Week ${currentWeek}?`)) {
+                allTimetableData[currentWeek] = {};
+                localStorage.setItem('allTimetableData', JSON.stringify(allTimetableData));
+                renderTimetable();
+                updatePeriodsAndIndicators();
+            }
+        }
+    }
+
+    renderTimetable();
+</script>
+
 </body>
 </html>
